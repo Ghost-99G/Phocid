@@ -1,4 +1,3 @@
-// app/src/main/kotlin/org/sunsetware/phocid/CompactAppWidgetReceiver.kt
 package org.sunsetware.phocid
 
 import android.content.ComponentName
@@ -37,6 +36,7 @@ import androidx.glance.layout.size
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
+import androidx.glance.unit.ColorProvider.Type
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
@@ -84,9 +84,9 @@ class CompactAppWidget : GlanceAppWidget() {
                 Box(
                     modifier =
                         GlanceModifier.cornerRadius(backgroundRadius.dp)
-                            .background(ColorProvider.systemColor(ColorProvider.Type.Surface))
+                            .background(ColorProvider.systemColor(Type.Surface))
                             .fillMaxSize()
-                            .clickable(actionStartActivity(context.packageManager.getLaunchIntentForPackage(context.packageName))),
+                            .clickable(actionStartActivity(context.packageManager.getLaunchIntentForPackage(context.packageName)!!)),
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     WidgetContent(track, playerTransientState.isPlaying)
@@ -112,12 +112,12 @@ private fun WidgetContent(track: Track?, isPlaying: Boolean) {
             Text(
                 title,
                 maxLines = 1,
-                style = TextStyle(ColorProvider.systemColor(ColorProvider.Type.OnSurface)),
+                style = TextStyle(ColorProvider.systemColor(Type.OnSurface)),
             )
             Text(
                 artist,
                 maxLines = 1,
-                style = TextStyle(ColorProvider.systemColor(ColorProvider.Type.OnSurfaceVariant)),
+                style = TextStyle(ColorProvider.systemColor(Type.OnSurfaceVariant)),
             )
         }
         Controls(isPlaying)
@@ -136,7 +136,7 @@ private fun Controls(isPlaying: Boolean) {
             ImageProvider(icon),
             description,
             modifier = modifier.size(48.dp),
-            colorFilter = ColorFilter.tint(ColorProvider.systemColor(ColorProvider.Type.OnSurface)),
+            colorFilter = ColorFilter.tint(ColorProvider.systemColor(Type.OnSurface)),
         )
     }
 
@@ -164,6 +164,7 @@ private fun Controls(isPlaying: Boolean) {
     }
 }
 
+@Composable
 private inline fun withController(crossinline action: (MediaController) -> Unit) {
     val context = LocalContext.current
     val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
